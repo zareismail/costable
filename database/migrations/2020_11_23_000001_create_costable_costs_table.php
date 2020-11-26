@@ -19,6 +19,7 @@ class CreateCostableCostsTable extends Migration
             $table->string('tracking_code')->nullable();
             $table->string('notes', 500)->nullable(); 
             $table->price('amount')->default(0.000); 
+            $table->price('due')->default(0.000); 
             $table->timestamp('target_date')->nullalbe(); 
             $table->morphs('costable');
             $table->auth();
