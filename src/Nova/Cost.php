@@ -18,6 +18,13 @@ class Cost extends Resource
     public static $model = \Zareismail\Costable\Models\CostableCost::class;
 
     /**
+     * The relationships that should be eager loaded when performing an index query.
+     *
+     * @var array
+     */
+    public static $with = ['costable'];
+
+    /**
      * Get the fields displayed by the resource.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -45,6 +52,9 @@ class Cost extends Resource
                 ->searchable(),
 
             DateTime::make(__('Target Date'), 'target_date'),
+
+            Currency::make(__('Due Amount'), 'due_amount')
+                ->exceptOnForms(),
 
             Currency ::make(__('Amount'), 'amount'),
 
