@@ -3,8 +3,7 @@
 namespace Zareismail\Costable\Nova; 
 
 use Illuminate\Http\Request; 
-use Laravel\Nova\Fields\{ID, Text, Number, HasMany}; 
-use Zareismail\NovaContracts\Nova\Fields\SharedResources;
+use Laravel\Nova\Fields\{ID, Text, Number, HasMany};  
 
 class Fee extends Resource
 {  
@@ -26,12 +25,7 @@ class Fee extends Resource
     	return [
     		ID::make(),   
 
-            Text::make(__('Name'), 'name'),
-
-            Number::make(__('Order'), 'order')
-                ->default(static::newModel()->count() + 1),
-
-            new SharedResources($request, $this), 
+            Text::make(__('Cost Type'), 'name'), 
 
             HasMany::make(__('Costs'), 'costs', Cost::class),
     	];

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCostableFeesTable extends Migration
+class ChangeCostableCostsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,8 @@ class CreateCostableFeesTable extends Migration
      */
     public function up()
     {
-        Schema::create('costable_fees', function (Blueprint $table) {
-            $table->id();
-            $table->naming(); 
-            $table->config(); 
-            $table->timestamps();
-            $table->softDeletes();
+        Schema::table('costable_costs', function (Blueprint $table) {
+            $table->datetime('payment_date')->useCurrent();
         });
     }
 
@@ -29,6 +25,8 @@ class CreateCostableFeesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('costable_fees');
+        Schema::create('costable_costs', function (Blueprint $table) {  
+            $table->dropColumn(['payment_date']);  
+        });
     }
 }

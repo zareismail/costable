@@ -16,32 +16,9 @@ class CostableCost extends AuthorizableModel implements HasMedia
      * @var array
      */
     protected $casts = [
-    	'target_date' => 'datetime',
+    	'payment_date' => 'datetime',
     	'created_at'  => 'datetime',
-    ];
-
-    /**
-     * Bootstrap the model and its traits.
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::saved(function($model) {
-        	if(is_null($model->due_amount)) {
-	        	$model->relationLoaded('costable') || $model->load('costable');
-	        	$model->relationLoaded('fee') || $model->load('fee'); 
-
-	        	$model->forceFill([
-	        		'due_amount' => $model->costable->dueAmount($model->fee)
-	        	]);
-
-	        	$model->save(); 
-        	}
-        });
-    }
+    ]; 
 
 	/**
 	 * Query the related details.
@@ -64,8 +41,7 @@ class CostableCost extends AuthorizableModel implements HasMedia
 	}  
 
 	public function registerMediaCollections(): void
-	{
-
+	{ 
 	    $this->addMediaCollection('invoice');
 	}
 }
