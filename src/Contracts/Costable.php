@@ -12,13 +12,5 @@ interface Costable
 	 * 
 	 * @return \Illuminate\Database\Eloquent\Relations\HasOneOrMany
 	 */
-	public function costs(): HasOneOrMany;
-
-	/**
-	 * Get the default amount for the CostableCost.
-	 * 
-	 * @param \Zareismail\Costable\Models\CostableFee $fee
-	 * @return float
-	 */
-	public function dueAmount(CostableFee $fee): float;
+	public function costs(): HasOneOrMany; 
 } 

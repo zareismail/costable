@@ -3,10 +3,12 @@
 namespace Zareismail\Costable\Nova; 
 
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\{ID, Text, Textarea, Currency, DateTime, BelongsTo, MorphTo, HasMany}; 
+use Laravel\Nova\Fields\{ID, Text, Textarea, Currency, DateTime, BelongsTo, HasMany}; 
 use DmitryBubyakin\NovaMedialibraryField\Fields\Medialibrary;
 use Zareismail\NovaContracts\Nova\User;
 use Zareismail\Costable\Models\CostableFee; 
+use Zareismail\Fields\MorphTo;  
+use Zareismail\Costable\Helper;
 
 class Cost extends Resource
 {  
@@ -43,18 +45,14 @@ class Cost extends Resource
                     return $request->user()->can('forceDelete', static::newModel());
                 }),  
 
-            BelongsTo::make(__('What kind of cost'), 'fee', Fee::class)
+            BelongsTo::make(__('Type Of Cost'), 'fee', Fee::class)
                 ->withoutTrashed(),
 
             MorphTo::make(__('Paid For'), 'costable')
-                ->types(CostableFee::sharedResources($request)->all())
-                ->withoutTrashed()
-                ->searchable(),
+                ->types(Helper::costableResources($request)->all())
+                ->withoutTrashed(),
 
-            DateTime::make(__('Target Date'), 'target_date'),
-
-            Currency::make(__('Due Amount'), 'due_amount')
-                ->exceptOnForms(),
+            DateTime::make(__('Payment Date'), 'payment_date'), 
 
             Currency ::make(__('Amount'), 'amount'),
 

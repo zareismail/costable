@@ -18,10 +18,7 @@ class CreateCostableCostsTable extends Migration
             $table->foreignId('fee_id')->constrained('costable_fees');
             $table->string('tracking_code')->nullable();
             $table->string('notes', 500)->nullable(); 
-            $table->price('amount')->default(0.000); 
-            $table->price('due_amount')->nullable(); 
-            $table->integer('order')->default(1); 
-            $table->timestamp('target_date')->nullalbe(); 
+            $table->price('amount')->default(0.000);  
             $table->morphs('costable');
             $table->auth();
             $table->detail();
