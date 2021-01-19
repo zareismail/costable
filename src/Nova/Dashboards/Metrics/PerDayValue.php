@@ -17,7 +17,8 @@ class PerDayValue extends Value
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->sum($request, $this->query($request), 'amount', 'payment_date');
+        return $this->sum($request, $this->query($request), 'amount', 'payment_date')
+                    ->currency(config('nova.currency'));
     }
 
     /**

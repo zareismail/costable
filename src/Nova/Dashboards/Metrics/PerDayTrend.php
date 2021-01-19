@@ -17,7 +17,9 @@ class PerDayTrend extends Trend
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->sumByMonths($request, $this->query($request), 'amount', 'payment_date');
+        return $this->sumByMonths($request, $this->query($request), 'amount', 'payment_date')
+                    ->suffix(config('nova.currency').PHP_EOL)
+                    ->withoutSuffixInflection();
     } 
 
     /**

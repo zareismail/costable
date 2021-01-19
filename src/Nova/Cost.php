@@ -3,7 +3,7 @@
 namespace Zareismail\Costable\Nova; 
 
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\{ID, Text, Textarea, Currency, DateTime, BelongsTo, HasMany}; 
+use Laravel\Nova\Fields\{ID, Text, Textarea, Currency, DateTime, BelongsTo}; 
 use DmitryBubyakin\NovaMedialibraryField\Fields\Medialibrary;
 use Zareismail\NovaContracts\Nova\User;
 use Zareismail\Costable\Models\CostableFee; 
@@ -58,7 +58,7 @@ class Cost extends Resource
                 ->required()
                 ->rules('required'),
 
-            Text::make(__('Tracking Code'), 'tracking_code'),
+            Text::make(__('Payment Tracking Code'), 'tracking_code'),
 
             Textarea::make(__('Additional Tips'), 'notes'),
 
