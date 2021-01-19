@@ -41,6 +41,10 @@ class CostableServiceProvider extends ServiceProvider
             Nova\Fee::class,
             Nova\Cost::class,
         ]);
+
+        LaravelNova::dashboards([
+            Nova\Dashboards\CostsReports::make(), 
+        ]);
     } 
 
     /**

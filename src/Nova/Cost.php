@@ -54,7 +54,9 @@ class Cost extends Resource
 
             DateTime::make(__('Payment Date'), 'payment_date'), 
 
-            Currency ::make(__('Amount'), 'amount'),
+            Currency::make(__('Amount'), 'amount')
+                ->required()
+                ->rules('required'),
 
             Text::make(__('Tracking Code'), 'tracking_code'),
 
@@ -63,5 +65,20 @@ class Cost extends Resource
             Medialibrary::make(__('Payment Invoices'), 'inovice') 
                 ->autouploading(),
     	];
+    }
+
+    /**
+     * Get the cards available on the entity.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function cards(Request $request)
+    {
+        return [
+            Metrics\CostsPerType::make(), 
+            Metrics\CostsPerResource::make(),
+            Metrics\CostsPerDay::make(),
+        ];
     }
 }
