@@ -3,6 +3,7 @@
 namespace Zareismail\Costable\Nova; 
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Nova; 
 use Laravel\Nova\Fields\{ID, Text, Textarea, Currency, DateTime, BelongsTo}; 
 use DmitryBubyakin\NovaMedialibraryField\Fields\Medialibrary;
 use Zareismail\NovaContracts\Nova\User;
@@ -25,6 +26,15 @@ class Cost extends Resource
      * @var array
      */
     public static $with = ['costable'];
+
+    /**
+     * The columns that should be searched.
+     *
+     * @var array
+     */
+    public static $search = [
+        'id', 'tracking_code', 'notes', 'costable_type', 'amount'
+    ];
 
     /**
      * Get the fields displayed by the resource.
@@ -80,5 +90,25 @@ class Cost extends Resource
             Metrics\CostsPerResource::make(),
             Metrics\CostsPerDay::make(),
         ];
+    }
+
+    /**
+     * Get the value that should be displayed to represent the resource.
+     *
+     * @return string
+     */
+    public function title()
+    { 
+        $titles = [];
+
+        if($fee = Nova::resourceForModel($this->fee)) {
+            $titles[] = (new $fee($this->fee))->title();
+        } 
+
+        if($costable = Nova::resourceForModel($this->costable)) {
+            $titles[] = (new $costable($this->costable))->title();
+        } 
+
+        return implode(': ', $titles);
     }
 }
