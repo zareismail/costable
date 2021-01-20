@@ -17,4 +17,16 @@ class Helper
             return collect(class_implements($resource::newModel()))->contains(Contracts\Costable::class); 
         })->values();
     }  
+
+    /**
+     * Return Nova's contractable resources.
+     * 
+     * @return \Laravel\Nova\ResourceCollection
+     */
+    public static function morphs()
+    {
+        return static::costableResources(app('request'))->map(function($resource) { 
+            return $resource::$model; 
+        })->all();
+    }  
 }

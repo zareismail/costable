@@ -33,7 +33,7 @@ class Cost extends Resource
      * @var array
      */
     public static $search = [
-        'id', 'tracking_code', 'notes', 'costable_type', 'amount'
+        'tracking_code', 'notes'
     ];
 
     /**
@@ -110,5 +110,24 @@ class Cost extends Resource
         } 
 
         return implode(': ', $titles);
+    }
+
+    /**
+     * Apply the search query to the query.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $search
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected static function applySearch($query, $search)
+    {
+        return parent::applySearch($query, $search)
+                ->orWhereHasMorph('costable', Helper::morphs(), function($morphTo, $type) use ($search) {
+                    $resource = Nova::resourceForModel($type);
+
+                    foreach ($resource::searchableColumns() as $column) {
+                        $morphTo->orWhere($morphTo->qualifyColumn($column), 'like', '%'.$search.'%');
+                    } 
+                });
     }
 }
