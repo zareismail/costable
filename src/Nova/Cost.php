@@ -121,13 +121,16 @@ class Cost extends Resource
      */
     protected static function applySearch($query, $search)
     {
-        return parent::applySearch($query, $search)
-                ->orWhereHasMorph('costable', Helper::morphs(), function($morphTo, $type) use ($search) {
+        return parent::applySearch($query, $search)->orWhere(function($query) use ($search) {
+            $query->orWhereHasMorph('costable', Helper::morphs(), function($morphTo, $type) use ($search) {
+                $morphTo->where(function($query) use ($type, $search) {
                     $resource = Nova::resourceForModel($type);
 
                     foreach ($resource::searchableColumns() as $column) {
-                        $morphTo->orWhere($morphTo->qualifyColumn($column), 'like', '%'.$search.'%');
-                    } 
+                        $query->orWhere($query->qualifyColumn($column), 'like', '%'.$search.'%');
+                    }  
                 });
+            }); 
+        });
     }
 }
