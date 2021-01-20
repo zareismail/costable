@@ -93,6 +93,22 @@ class Cost extends Resource
     }
 
     /**
+     * Get the filters available on the entity.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    public function filters(Request $request)
+    {
+        return [
+            Filters\MinAmount::make(),
+            Filters\MaxAmount::make(), 
+            Filters\Fee::make(), 
+            Filters\Resource::make(), 
+        ];
+    }
+
+    /**
      * Get the value that should be displayed to represent the resource.
      *
      * @return string
