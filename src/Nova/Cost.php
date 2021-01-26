@@ -144,7 +144,11 @@ class Cost extends Resource
 
                     foreach ($resource::searchableColumns() as $column) {
                         $query->orWhere($query->qualifyColumn($column), 'like', '%'.$search.'%');
-                    }  
+                    } 
+
+                    if(method_exists($resource, 'applyCostSearch')) {
+                        $resource::applyContractSearch($query, $search);  
+                    } 
                 });
             }); 
         });
