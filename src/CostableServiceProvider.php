@@ -43,7 +43,10 @@ class CostableServiceProvider extends ServiceProvider
         ]);
 
         LaravelNova::dashboards([
-            Nova\Dashboards\CostsReports::make(), 
+            Nova\Dashboards\CostsReports::make()->canSee(function($request) {
+                return $request->user()->can('dashboards.costs') || 
+                       $request->user()->can('create', Models\CostableCost::class);
+            }), 
         ]);
     } 
 
