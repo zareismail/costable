@@ -5,12 +5,12 @@ namespace Zareismail\Costable\Nova\Metrics;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Metrics\Partition;
 use Laravel\Nova\Nova;
-use Zareismail\Costable\Models\CostableCost;
+use Zareismail\Costable\Nova\Cost;
 
 class CostsPerResource extends Partition
 {
     use GlobalFilterable;
-    
+
     /**
      * Calculate the value of the metric.
      *
@@ -19,7 +19,9 @@ class CostsPerResource extends Partition
      */
     public function calculate(NovaRequest $request)
     { 
-        return $this->sum($request, $this->applyFilters($request, CostableCost::authenticate()), 'amount', 'costable_type')
+        $query = Cost::indexQuery($request, Cost::newModel());
+
+        return $this->sum($request, $this->applyFilters($request, $query), 'amount', 'costable_type')
                     ->label(function($value) {
                         if($resource = Nova::resourceForModel($value)) {
                             return $resource::label();

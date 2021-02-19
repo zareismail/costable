@@ -4,6 +4,7 @@ namespace Zareismail\Costable\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Nova; 
+use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Fields\{ID, Text, Textarea, Currency, DateTime, BelongsTo}; 
 use DmitryBubyakin\NovaMedialibraryField\Fields\Medialibrary;
 use Nemrutco\NovaGlobalFilter\NovaGlobalFilter;
@@ -77,6 +78,25 @@ class Cost extends Resource
             Medialibrary::make(__('Payment Invoices'), 'inovice') 
                 ->autouploading(),
     	];
+    }
+
+    /**
+     * Build an "index" query for the given resource.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public static function indexQuery(NovaRequest $request, $query)
+    {
+        return parent::indexQuery($request, $query)
+            ->when(static::shouldAuthenticate($request, $query), function($query) {
+                $query->orWhereHasMorph('costable', Helper::morphs(), function($query, $type) { 
+                    if(\Zareismail\NovaPolicy\Helper::isOwnable($type)) {
+                        $query->authenticate();
+                    }
+                });
+            });
     }
 
     /**
