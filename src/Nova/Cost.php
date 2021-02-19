@@ -108,6 +108,8 @@ class Cost extends Resource
     public function filters(Request $request)
     {
         return [
+            Filters\FromDate::make(),
+            Filters\ToDate::make(), 
             Filters\MinAmount::make(),
             Filters\MaxAmount::make(), 
             Filters\Fee::make(), 

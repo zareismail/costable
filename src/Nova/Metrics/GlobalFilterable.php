@@ -13,11 +13,11 @@ trait GlobalFilterable
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @return mixed
      */
-    public function applyFilters(NovaRequest $request, $model)
+    public function applyFilters(NovaRequest $request, $query)
     {
         $filters = json_decode($request->filters, true);
 
-        return $model::when(isset($filters[FromDate::class]), function($query) use ($filters) {
+        return $query->when(isset($filters[FromDate::class]), function($query) use ($filters) {
             $query->whereDate('payment_date', '>=', $filters[FromDate::class]);
         })->when(isset($filters[ToDate::class]), function($query) use ($filters) {
             $query->whereDate('payment_date', '<=', $filters[ToDate::class]);
