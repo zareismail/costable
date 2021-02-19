@@ -18,7 +18,7 @@ class CostsPerDay extends Trend
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->sumByMonths($request, $this->applyFilters($request, CostableCost::class), 'amount')
+        return $this->sumByMonths($request, $this->applyFilters($request, CostableCost::authenticate()), 'amount')
                     ->suffix(config('nova.currency').PHP_EOL)
                     ->withoutSuffixInflection()
                     ->showLatestValue();

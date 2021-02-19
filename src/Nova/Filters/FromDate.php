@@ -20,6 +20,6 @@ class FromDate extends DateFilter
     {
         $value = Carbon::parse($value);
 
-        return $query;
+        return $query->whereDate('payment_date', '>=', $value);
     }
 }
