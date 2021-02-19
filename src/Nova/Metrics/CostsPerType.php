@@ -8,6 +8,8 @@ use Zareismail\Costable\Models\{CostableCost, CostableFee};
 
 class CostsPerType extends Partition
 {
+    use GlobalFilterable;
+    
     /**
      * Calculate the value of the metric.
      *
@@ -18,7 +20,7 @@ class CostsPerType extends Partition
     {
         $fees = CostableFee::get()->pluck('name', 'id');
 
-        return $this->sum($request, CostableCost::class, 'amount', 'fee_id')
+        return $this->sum($request, $this->applyFilters($request, CostableCost::class), 'amount', 'fee_id')
                     ->label(function($value) use ($fees) {
                         return $fees->get($value) ?? $value;
                     });

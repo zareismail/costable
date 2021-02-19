@@ -6,10 +6,11 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Nova; 
 use Laravel\Nova\Fields\{ID, Text, Textarea, Currency, DateTime, BelongsTo}; 
 use DmitryBubyakin\NovaMedialibraryField\Fields\Medialibrary;
-use Zareismail\NovaContracts\Nova\User;
+use Nemrutco\NovaGlobalFilter\NovaGlobalFilter;
 use Zareismail\Costable\Models\CostableFee; 
-use Zareismail\Fields\MorphTo;  
+use Zareismail\NovaContracts\Nova\User;
 use Zareismail\Costable\Helper;
+use Zareismail\Fields\MorphTo;  
 
 class Cost extends Resource
 {  
@@ -56,6 +57,7 @@ class Cost extends Resource
                 }),  
 
             BelongsTo::make(__('Type Of Cost'), 'fee', Fee::class)
+                ->showCreateRelationButton()
                 ->withoutTrashed(),
 
             MorphTo::make(__('Paid For'), 'costable')
@@ -86,6 +88,11 @@ class Cost extends Resource
     public function cards(Request $request)
     {
         return [
+            NovaGlobalFilter::make([ 
+                Filters\FromDate::make(),
+                Filters\ToDate::make(),
+            ]),
+            
             Metrics\CostsPerType::make(), 
             Metrics\CostsPerResource::make(),
             Metrics\CostsPerDay::make(),

@@ -11,6 +11,7 @@
         "optimistdigital/nova-input-filter": "^1.0",
         "zareismail/nova-cascade": "~0.1",
         "zareismail/nova-currency": "^0.1",
+        "nemrutco/nova-global-filter": "~1.1",
         "zareismail/glance": "dev-master"
     },
     "autoload": {

@@ -9,6 +9,8 @@ use Zareismail\Costable\Models\CostableCost;
 
 class CostsPerResource extends Partition
 {
+    use GlobalFilterable;
+    
     /**
      * Calculate the value of the metric.
      *
@@ -17,7 +19,7 @@ class CostsPerResource extends Partition
      */
     public function calculate(NovaRequest $request)
     { 
-        return $this->sum($request, CostableCost::class, 'amount', 'costable_type')
+        return $this->sum($request, $this->applyFilters($request, CostableCost::class), 'amount', 'costable_type')
                     ->label(function($value) {
                         if($resource = Nova::resourceForModel($value)) {
                             return $resource::label();

@@ -2,12 +2,14 @@
 
 namespace Zareismail\Costable\Nova\Metrics;
 
-use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\Metrics\Trend;
+use Laravel\Nova\Http\Requests\NovaRequest; 
 use Zareismail\Costable\Models\CostableCost;
 
 class CostsPerDay extends Trend
 {
+    use GlobalFilterable;
+
     /**
      * Calculate the value of the metric.
      *
@@ -16,7 +18,7 @@ class CostsPerDay extends Trend
      */
     public function calculate(NovaRequest $request)
     {
-        return $this->sumByMonths($request, CostableCost::class, 'amount')
+        return $this->sumByMonths($request, $this->applyFilters($request, CostableCost::class), 'amount')
                     ->suffix(config('nova.currency').PHP_EOL)
                     ->withoutSuffixInflection()
                     ->showLatestValue();
@@ -30,9 +32,7 @@ class CostsPerDay extends Trend
     public function ranges()
     {
         return [
-            30 => __('30 Days'),
-            60 => __('60 Days'),
-            90 => __('90 Days'),
+            10000 => __('All'), 
         ];
     }
 
