@@ -30,6 +30,5 @@
         "sort-packages": true
     },
     "minimum-stability": "dev",
-    "prefer-stable": true, 
-    "version": "1.100.0" 
+    "prefer-stable": true
 }
