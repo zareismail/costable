@@ -27,7 +27,7 @@ class Cost extends Resource
      *
      * @var array
      */
-    public static $with = ['costable'];
+    public static $with = [];
 
     /**
      * The columns that should be searched.
@@ -76,8 +76,31 @@ class Cost extends Resource
             Textarea::make(__('Additional Tips'), 'notes'),
 
             Medialibrary::make(__('Payment Invoices'), 'inovice') 
-                ->autouploading(),
+                ->autouploading()
+                ->hideFromIndex(),
     	];
+    }
+
+    /**
+     * Build an "index" query for the given resource.
+     *
+     * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public static function indexQuery(NovaRequest $request, $query)
+    {
+        $query->with([
+            'costable' => function($morphTo) use ($request) {
+                $morphTo->morphWith(Helper::morphs())->withTrashed();
+            },
+            'fee' => function($query) {
+                $query->withTrashed();
+            },
+            'auth' => function($query) {
+                $query->withTrashed();
+            }
+        ]);
     }
 
     /**
@@ -157,7 +180,7 @@ class Cost extends Resource
 
         return implode(': ', $titles);
     }
-    
+
     /**
      * Apply the search query to the query.
      *
