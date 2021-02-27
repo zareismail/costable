@@ -157,7 +157,7 @@ class Cost extends Resource
 
         return implode(': ', $titles);
     }
-
+    
     /**
      * Apply the search query to the query.
      *
@@ -166,21 +166,20 @@ class Cost extends Resource
      * @return \Illuminate\Database\Eloquent\Builder
      */
     protected static function applySearch($query, $search)
-    {
+    { 
         return parent::applySearch($query, $search)->orWhere(function($query) use ($search) {
-            $query->orWhereHasMorph('costable', Helper::morphs(), function($morphTo, $type) use ($search) {
-                $morphTo->where(function($query) use ($type, $search) {
-                    $resource = Nova::resourceForModel($type);
-
-                    foreach ($resource::searchableColumns() as $column) {
-                        $query->orWhere($query->qualifyColumn($column), 'like', '%'.$search.'%');
-                    } 
-
-                    if(method_exists($resource, 'applyCostSearch')) {
-                        $resource::applyContractSearch($query, $search);  
-                    } 
+            $searchCallback = function($morphTo, $type) use ($search) {
+                $morphTo->where(function($query) use ($type, $search) { 
+                    forward_static_call(
+                        [Nova::resourceForModel($type), 'buildIndexQuery'], 
+                        app(NovaRequest::class), 
+                        $query, 
+                        $search
+                    ); 
                 });
-            }); 
+            };
+
+            $query->orWhereHasMorph('costable', Helper::morphs(), $searchCallback); 
         });
     }
 }
