@@ -81,23 +81,24 @@ class Cost extends Resource
     }
 
     /**
-     * Build an "index" query for the given resource.
+     * Authenticate the query for the given request.
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public static function indexQuery(NovaRequest $request, $query)
+    public static function authenticateQuery(NovaRequest $request, $query)
     {
-        return parent::indexQuery($request, $query)
-            ->when(static::shouldAuthenticate($request, $query), function($query) {
-                $query->orWhereHasMorph('costable', Helper::morphs(), function($query, $type) { 
-                    if(\Zareismail\NovaPolicy\Helper::isOwnable($type)) {
-                        $query->authenticate();
-                    }
+        return $query->where(function($query) use ($request) {
+            $query->when(static::shouldAuthenticate($request, $query), function($query) {
+                $query->authenticate()->orWhereHasMorph('costable', Helper::morphs(), function($query, $type) { 
+                    forward_static_call(
+                        [Nova::resourceForModel($type), 'buildIndexQuery'], app(NovaRequest::class), $query
+                    );
                 });
             });
-    }
+        });
+    } 
 
     /**
      * Get the cards available on the entity.
