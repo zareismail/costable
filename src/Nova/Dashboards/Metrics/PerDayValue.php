@@ -40,4 +40,14 @@ class PerDayValue extends Value
     {
         // return now()->addMinutes(5);
     } 
+
+    /**
+     * Get the ranges available for the metric.
+     *
+     * @return array
+     */
+    public function ranges()
+    {
+        return array_merge(['ALL' => __('All')], parent::ranges());
+    }
 }
