@@ -3,8 +3,8 @@
 namespace Zareismail\Costable\Nova\Dashboards\Metrics;
  
 use Laravel\Nova\Http\Requests\NovaRequest; 
-use Laravel\Nova\Nova;
-use Zareismail\Costable\Models\CostableCost;
+use Laravel\Nova\Nova; 
+use Zareismail\Costable\Nova\Cost;
 use Zareismail\Costable\Helper; 
 
 trait InteractsWithFilters 
@@ -16,23 +16,17 @@ trait InteractsWithFilters
      */
     public function query(NovaRequest $request)
     {  
-        return CostableCost::where('fee_id', data_get($this->meta, 'costable.id'))
-                    ->when(request('viaResource'), function($query) use ($request) {
-                        $costable = Nova::resourceForKey(request('viaResource'));
-                        $costableId = intval(request('viaResourceId'));
+        return Cost::authenticateQuery($request, Cost::newModel())
+                ->where('fee_id', data_get($this->meta, 'costable.id'))
+                ->when(request('viaResource'), function($query) use ($request) {
+                    $costable = Nova::resourceForKey(request('viaResource'));
+                    $costableId = intval(request('viaResourceId'));
 
-                        $query->where('costable_type', $costable::newModel()->getMorphClass())
-                              ->when($costableId, function($query) use ($costableId) {
-                                    $query->where('costable_id', $costableId);
-                                });
-                    })
-                    ->where(function($query) use ($request) {
-                      $query
-                        ->authenticate()
-                        ->orWhereHasMorph('costable', $this->getMorphs($request), function($query) {
-                            $query->authenticate();
-                        });
-                    });
+                    $query->where('costable_type', $costable::newModel()->getMorphClass())
+                          ->when($costableId, function($query) use ($costableId) {
+                                $query->where('costable_id', $costableId);
+                            });
+                });
     }
 
     /**
@@ -42,9 +36,7 @@ trait InteractsWithFilters
      */
     public function getMorphs($request)
     {
-        return Helper::costableResources($request)->map(function($resource) {
-            return $resource::newModel()->getMorphClass();
-        })->all();
+        return Helper::morphs();
     }
 
     /**
