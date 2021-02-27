@@ -133,6 +133,10 @@ class CostsReports extends Dashboard
      */
     public function cards()
     {  
+        if(! $this->isValidRequest()) {
+            return [];
+        }
+
         return CostableFee::get()->flatMap(function($costable) {
             $viaResource = $this->findResourceForKey(request('costable'));
             $viaResourceId = $viaResource ? request($this->resourceFilterKey($viaResource)) : null;
@@ -153,37 +157,17 @@ class CostsReports extends Dashboard
         })->all(); 
     }
 
-    /**
-     * Returns an array of the year months.
-     * 
-     * @return array
-     */
-    public function months()
+    public function isValidRequest()
     {
-        return [
-            now()->format($this->dateFormat()),
-            now()->addMonths(1)->format($this->dateFormat()),
-            now()->addMonths(2)->format($this->dateFormat()),
-            now()->addMonths(3)->format($this->dateFormat()),
-            now()->addMonths(4)->format($this->dateFormat()),
-            now()->addMonths(5)->format($this->dateFormat()),
-            now()->addMonths(6)->format($this->dateFormat()),
-            now()->addMonths(7)->format($this->dateFormat()),
-            now()->addMonths(8)->format($this->dateFormat()),
-            now()->addMonths(9)->format($this->dateFormat()),
-            now()->addMonths(10)->format($this->dateFormat()),
-            now()->addMonths(11)->format($this->dateFormat()),
-        ];
-    }
+        if(request()->route('dashboard') === static::uriKey()) {
+            return true;
+        }
 
-    /**
-     * Returns the month format string.
-     * 
-     * @return string
-     */
-    public function dateFormat()
-    {
-        return 'M';
+        if(Str::startsWith(request()->route('metric'), ['costs-reports'])) {
+            return true;
+        }
+
+        return false;
     } 
 
     /**

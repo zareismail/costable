@@ -67,7 +67,8 @@ trait InteractsWithFilters
         $viaResource = data_get($this->meta, 'viaResource');
         $viaResourceId = data_get($this->meta, 'viaResourceId');
 
-        return parent::uriKey(). 
+        return  'costs-reports-'.
+                parent::uriKey(). 
                 data_get($this->meta, 'costable.id').
                 ($viaResource ? '?'.http_build_query(compact('viaResource', 'viaResourceId')) : '');
     }
