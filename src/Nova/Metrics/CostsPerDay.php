@@ -19,7 +19,7 @@ class CostsPerDay extends Trend
      */
     public function calculate(NovaRequest $request)
     {
-        $query = Cost::indexQuery($request, Cost::newModel());
+        $query = Cost::authenticateQuery($request, Cost::newModel());
 
         return $this->sumByMonths($request, $this->applyFilters($request, $query), 'amount')
                     ->suffix(config('nova.currency').PHP_EOL)

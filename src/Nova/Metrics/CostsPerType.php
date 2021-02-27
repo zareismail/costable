@@ -20,7 +20,7 @@ class CostsPerType extends Partition
     public function calculate(NovaRequest $request)
     {
         $fees = CostableFee::get()->pluck('name', 'id');
-        $query = Cost::indexQuery($request, Cost::newModel());
+        $query = Cost::authenticateQuery($request, Cost::newModel());
 
         return $this->sum($request, $this->applyFilters($request, $query), 'amount', 'fee_id')
                     ->label(function($value) use ($fees) {

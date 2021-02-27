@@ -19,7 +19,7 @@ class CostsPerResource extends Partition
      */
     public function calculate(NovaRequest $request)
     { 
-        $query = Cost::indexQuery($request, Cost::newModel());
+        $query = Cost::authenticateQuery($request, Cost::newModel());
 
         return $this->sum($request, $this->applyFilters($request, $query), 'amount', 'costable_type')
                     ->label(function($value) {
